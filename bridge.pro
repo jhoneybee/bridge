@@ -1,4 +1,4 @@
-QT       += core gui websockets
+QT       += core gui websockets axcontainer
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,15 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    excel.cpp \
     main.cpp \
     mainwindow.cpp \
-    websocketclient.cpp \
-    websocketserver.cpp
+    websocketserver.cpp \
+    word.cpp
 
 HEADERS += \
+    excel.h \
     mainwindow.h \
-    websocketclient.h \
-    websocketserver.h
+    websocketserver.h \
+    word.h
 
 FORMS += \
     mainwindow.ui
