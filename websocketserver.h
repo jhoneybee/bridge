@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtWebSockets>
 #include <QWebSocketServer>
+#include <QJsonDocument>
 class WebSocketServer;
 
 #include "mainwindow.h"
@@ -18,7 +19,6 @@ public:
     void listen(quint16 port = 29580);
 private:
     QWebSocketServer *webSocketServer;
-    Word *word;
     MainWindow *mainWindow;
     QList<QWebSocket*> clients;
 public slots:

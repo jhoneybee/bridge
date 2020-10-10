@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>bridge</Name>
+    <Version>0.0.1</Version>
+    <Title></Title>
+    <Publisher>zhangjin0908@hotmail.com</Publisher>
+    <StartMenuDir>bridge</StartMenuDir>
+    <TargetDir>@HomeDir@/InstallationDirectory</TargetDir>
+</Installer>

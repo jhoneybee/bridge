@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>演示Demo</title>
+</head>
+<body>
+    <script>
+        var socket = new WebSocket('ws://localhost:29580');
+
+        // 如果已经关闭连接,则进行
+        if (socket.CLOSED) {
+            alert("未启动插件程序,请点击安装后进行启动.")
+        }
+
+        function preview(){
+            socket.send(JSON.stringify({
+                "channel": "OFFICE_OPEN_WORD_PREVIEW",
+                "params": {
+                    "target": "D:/Users/zhang/Desktop/WPS.docx"
+                }
+            }))
+        }
+
+        function print(){
+            socket.send(JSON.stringify({
+                "channel": "OFFICE_OPEN_WORD_PRINT",
+                "params": {
+                    "target": "D:/Users/zhang/Desktop/WPS.docx"
+                }
+            }))
+        }
+    </script>
+    <button onclick="preview()">预览Word</button>
+    <button onclick="print()">打印Word</button>
+    <button>编辑Word</button>
+</body>
+</html>

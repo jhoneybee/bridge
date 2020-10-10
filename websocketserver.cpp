@@ -4,7 +4,6 @@ WebSocketServer::WebSocketServer(MainWindow *mainWindow) {
     this->mainWindow = mainWindow;
     this->webSocketServer = new QWebSocketServer(QStringLiteral("bridge"), QWebSocketServer::NonSecureMode);
     this->mainWindow = mainWindow;
-    this->word = new Word(mainWindow);
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -53,6 +52,8 @@ void WebSocketServer::onDisconnected(){
 }
 
 void WebSocketServer::onTextMessageReceived(QString message) {
+    QWebSocket *pClient = qobject_cast<QWebSocket *>(sender());
+
     mainWindow->debug("Text message received : " + message);
 
     QJsonParseError json_error;
@@ -60,7 +61,16 @@ void WebSocketServer::onTextMessageReceived(QString message) {
 
     // 如果JSON格式错误，则输出对应的错误信息
     if (json_error.error != QJsonParseError::NoError) {
-        mainWindow->debug("JSON format is incorrect : " + message);
+        QString errorMessage = "JSON format is incorrect : " + message;
+        mainWindow->debug(errorMessage);
+
+        QJsonObject sendJson;
+        sendJson["status"] = 200;
+        sendJson["message"] = errorMessage;
+
+        QJsonDocument doc(sendJson);
+        pClient->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+        pClient->flush();
         return;
     }
     QJsonObject jsonObject = document.object();
@@ -70,18 +80,25 @@ void WebSocketServer::onTextMessageReceived(QString message) {
     // 参数信息
     QJsonObject params = jsonObject.value("params").toObject();
 
+    WordStruct wordStruct;
+    wordStruct.client = pClient;
+    wordStruct.filename = params.value("filename").toString();
+    wordStruct.id = jsonObject.value("id").toString();
+    wordStruct.saveUrl = params.value("saveUrl").toString();
+    wordStruct.target = params.value("target").toString();
+    Word word(mainWindow, &wordStruct);
     if (channel == "OFFICE_OPEN_WORD_EDITOR") {
         // 打开 OFFICE 的 Word 功能
         // 设置文件目标地址,以及保存地址,编辑完文件后自动保存上传到服务器。
-        word->editor(params.value("target").toString(), params.value("saveUrl").toString());
+        word.editor();
         return;
     }else if (channel == "OFFICE_OPEN_WORD_PREVIEW") {
         // 预览Word的文件
-        word->preview(params.value("target").toString());
+        word.preview();
         return;
     }else if (channel == "OFFICE_OPEN_WORD_PRINT") {
         // 打印 Word
-        word->print(params.value("target").toString());
+        word.print();
         return;
     }
 }

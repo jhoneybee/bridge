@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>core</DisplayName>
+    <Description>主要程序</Description>
+    <Version>0.0.1</Version>
+    <ReleaseDate>2020-10-09</ReleaseDate>
+    <Licenses>
+        <License name="GPLv3" file="license.txt" />
+    </Licenses>
+</Package>

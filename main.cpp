@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    MainWindow w;    
     QApplication::setQuitOnLastWindowClosed(false);
+    MainWindow w;
     return a.exec();
 }

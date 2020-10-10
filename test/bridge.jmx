@@ -13,10 +13,10 @@
     </TestPlan>
     <hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Thread Group" enabled="true">
-        <stringProp name="ThreadGroup.on_sample_error">startnextloop</stringProp>
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
-          <intProp name="LoopController.loops">-1</intProp>
+          <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
         <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
@@ -26,6 +26,25 @@
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
       </ThreadGroup>
       <hashTree>
+        <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="OFFICE_OPEN_WORD_PRINT" enabled="false">
+          <stringProp name="TestPlan.comments">打印一个word</stringProp>
+          <boolProp name="TLS">false</boolProp>
+          <stringProp name="server">127.0.0.1</stringProp>
+          <stringProp name="port">29580</stringProp>
+          <stringProp name="path"></stringProp>
+          <stringProp name="connectTimeout">20000</stringProp>
+          <boolProp name="binaryPayload">false</boolProp>
+          <stringProp name="requestData">{
+	&quot;channel&quot;: &quot;OFFICE_OPEN_WORD_PRINT&quot;,
+	&quot;params&quot;: {
+		&quot;target&quot;: &quot;D:/Users/zhang/Desktop/承包商员工月度绩效考核评价表-张尽.docx&quot;
+	}
+}</stringProp>
+          <boolProp name="createNewConnection">true</boolProp>
+          <boolProp name="loadDataFromFile">false</boolProp>
+          <stringProp name="dataFile"></stringProp>
+        </eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler>
+        <hashTree/>
         <eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler guiclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSamplerGui" testclass="eu.luminis.jmeter.wssampler.SingleWriteWebSocketSampler" testname="OFFICE_OPEN_WORD_PREVIEW" enabled="true">
           <stringProp name="TestPlan.comments">预览一个WORD</stringProp>
           <boolProp name="TLS">false</boolProp>
@@ -35,10 +54,10 @@
           <stringProp name="connectTimeout">20000</stringProp>
           <boolProp name="binaryPayload">false</boolProp>
           <stringProp name="requestData">{
-  channel: &quot;OFFICE_OPEN_WORD_PREVIEW&quot;,
-  params: {
-     target: &quot;D:/Users/zhang/Desktop/张尽.docx&quot;,
-  }
+	&quot;channel&quot;: &quot;OFFICE_OPEN_WORD_PREVIEW&quot;,
+	&quot;params&quot;: {
+		&quot;target&quot;: &quot;D:/Users/zhang/Desktop/承包商员工月度绩效考核评价表-张尽.docx&quot;
+	}
 }</stringProp>
           <boolProp name="createNewConnection">true</boolProp>
           <boolProp name="loadDataFromFile">false</boolProp>

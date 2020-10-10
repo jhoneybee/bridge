@@ -10,37 +10,47 @@
 class Word;
 
 #include "mainwindow.h"
+#include "httpclient.h"
 
+struct WordStruct {
+    QString target;
+    QString saveUrl;
+    QString filename;
+    QString id;
+    QWebSocket *client;
+};
 
 class Word : public QObject{
     Q_OBJECT
 public:
-    Word(MainWindow *mainWindow);
+    Word(MainWindow *mainWindow, WordStruct *wordStruct);
     ~Word();
 
     /**
      * @brief editor 编辑Word
      * @param url 要编辑url的地址
      */
-    void editor(QString target, QString saveUrl);
+    void editor();
 
     /**
      * @brief preview 预览office
      * @param url 要预览的office地址
      * @param saveUrl 保存到服务器的URL地址
      */
-    void preview(QString target);
+    void preview();
 
     /**
      * @brief print 将Word打印
      * @param target word的预览地址
      */
-    void print(QString target);
-
+    void print();
 private:
     MainWindow *mainWindow;
-    QAxWidget *word;
-    QDialog *dialog;
+    HttpClient *httpClient;
+    WordStruct *wordStruct;
+public slots:
+    void quit();
+    void uploadDone();
 };
 
 #endif // WORD_H

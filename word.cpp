@@ -1,46 +1,67 @@
 #include "word.h"
 
-Word::Word(MainWindow *mainWindow) {
+Word::Word(MainWindow *mainWindow, WordStruct *wordStruct) {
     this->mainWindow = mainWindow;
-
+    this->httpClient = new HttpClient(mainWindow);
+    this->wordStruct = wordStruct;
+    connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
 }
 
 Word::~Word(){
-    word->clear();
-    delete word;
+    this->httpClient->deleteLater();
 }
 
-void Word::editor(QString target, QString saveUrl) {
-}
-
-void Word::preview(QString target) {
-    if (dialog) {
-        delete(dialog);
-    }
-
-    dialog = new QDialog(mainWindow);
-    QVBoxLayout *layout = new QVBoxLayout;
-    dialog->setLayout(layout);
-    dialog->showMaximized();
-
-    this->word = new QAxWidget(QString::fromUtf8("Word.Application"), dialog);
-    this->word->dynamicCall("Visible", false);
+void Word::editor() {
+    // 下载文件到临时目录
+    httpClient->download(wordStruct->target, wordStruct->filename);
+    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
+    connect(word, SIGNAL(Quit()), this, SLOT(quit()));
+    word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
-    documents->dynamicCall("Open(const QString&)",target);
+    documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + wordStruct->filename);
 }
 
-void Word::print(QString target) {
-    if (dialog) {
-        delete(dialog);
-    }
+void Word::quit() {
+    httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
+}
 
-    dialog = new QDialog(mainWindow);
-    QVBoxLayout *layout = new QVBoxLayout;
-    dialog->setLayout(layout);
-    dialog->showMaximized();
-    this->word = new QAxWidget(QString::fromUtf8("Word.Application"), dialog);
-    this->word->dynamicCall("Visible", false);
+void Word::uploadDone() {
+    QJsonObject sendJson;
+    sendJson["id"] = wordStruct->id;
+    sendJson["status"] = 200;
+    sendJson["message"] = "Word文件保存成功";
+    QJsonDocument doc(sendJson);
+    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    wordStruct->client->flush();
+}
+
+void Word::preview() {
+    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
+    word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
-    documents->dynamicCall("Open(const QString&)",target);
-    documents->dynamicCall("PrintOut()");
+    documents->dynamicCall("Open(const QString&)", wordStruct->target);
+
+    QJsonObject sendJson;
+    sendJson["id"] = wordStruct->id;
+    sendJson["status"] = 200;
+    sendJson["message"] = "预览数据成功";
+    QJsonDocument doc(sendJson);
+    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    wordStruct->client->flush();
+}
+
+void Word::print() {
+    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
+    word->setProperty("Visible", false);
+    QAxObject *documents = word->querySubObject("Documents");
+    documents->dynamicCall("Open(const QString&)", wordStruct->target);
+    word->dynamicCall("PrintOut()");
+
+    QJsonObject sendJson;
+    sendJson["id"] = wordStruct->id;
+    sendJson["status"] = 200;
+    sendJson["message"] = "打印数据成功";
+    QJsonDocument doc(sendJson);
+    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    wordStruct->client->flush();
 }
