@@ -7,7 +7,7 @@
 - 预览Word文件
 
 
-# Web调用例子
+## Web调用例子
 
 
 ```js
@@ -47,7 +47,7 @@ function editor(){
 }
 ```
 
-## 预览 Word
+### 预览 Word
 
 
 ```json
@@ -66,7 +66,7 @@ function editor(){
 
 
 
-## 打印 Word
+### 打印 Word
 
 ```json
 {
@@ -82,7 +82,7 @@ function editor(){
 |target | 字符串类型 | 要访问的文档地址，可以是一个本地的文档，也可以是一个url地址
 
 
-## 编辑 Word
+### 编辑 Word
 
 ```json
 {
