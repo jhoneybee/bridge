@@ -9,16 +9,11 @@
     <script>
         var socket = new WebSocket('ws://localhost:29580');
 
-        // 如果已经关闭连接,则进行
-        if (socket.CLOSED) {
-            alert("未启动插件程序,请点击安装后进行启动.")
-        }
-
         function preview(){
             socket.send(JSON.stringify({
                 "channel": "OFFICE_OPEN_WORD_PREVIEW",
                 "params": {
-                    "target": "D:/Users/zhang/Desktop/WPS.docx"
+                    "target": "http://localhost:8000/1.docx"
                 }
             }))
         }
@@ -27,13 +22,24 @@
             socket.send(JSON.stringify({
                 "channel": "OFFICE_OPEN_WORD_PRINT",
                 "params": {
-                    "target": "D:/Users/zhang/Desktop/WPS.docx"
+                    "target": "http://localhost:8000/1.docx"
+                }
+            }))
+        }
+
+        function editor() {
+            socket.send(JSON.stringify({
+                "channel": "OFFICE_OPEN_WORD_EDITOR",
+                "params": {
+                    "filename": "1.docx",
+                    "target": "http://localhost:8000/1.docx",
+                    "saveUrl": "http://localhost:8000/saveUrl",
                 }
             }))
         }
     </script>
     <button onclick="preview()">预览Word</button>
     <button onclick="print()">打印Word</button>
-    <button>编辑Word</button>
+    <button onclick="editor()">编辑Word</button>
 </body>
 </html>

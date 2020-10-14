@@ -51,6 +51,7 @@ private:
 public slots:
     void quit();
     void uploadDone();
+    void downloadDone();
 };
 
 #endif // WORD_H

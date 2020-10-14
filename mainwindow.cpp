@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setWindowFlags(windowFlags()&~Qt::WindowMaximizeButtonHint);
     setFixedSize(this->width(),this->height());
 
-    QSystemTrayIcon* trayIconPtr = new QSystemTrayIcon(parent);
+    trayIconPtr = new QSystemTrayIcon(parent);
     QPixmap icon = QPixmap("://resources/img/svg/icon.svg");
     trayIconPtr->setIcon(icon);
     trayIconPtr->show();
@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 void MainWindow::setConfig(Config *config) {
     this->ui->fProtValue->setText(config->port);
     this->ui->fWebSocketValue->setText(config->webSocket);
-    this->ui->fHttpValue->setText(config->http);
 }
 
 void MainWindow::activated(QSystemTrayIcon::ActivationReason reason) {

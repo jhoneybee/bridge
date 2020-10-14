@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>793</width>
-    <height>265</height>
+    <height>263</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,32 +87,6 @@
          <x>290</x>
          <y>30</y>
          <width>471</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="fHttp">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>70</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string> HTTP</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="fHttpValue">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>70</y>
-         <width>681</width>
          <height>21</height>
         </rect>
        </property>

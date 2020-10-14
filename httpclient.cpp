@@ -10,25 +10,26 @@ HttpClient::~HttpClient(){
 }
 
 void HttpClient::download(QString url, QString filename) {
-    networkReply = avatorManager->get(QNetworkRequest(QUrl(url)));
-    tempFile = new QFile(QDir::tempPath() + '/' + filename);
+    // 构建及发送请求
+    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QNetworkRequest request;
+    request.setUrl(QUrl(url));
+    QNetworkReply *pReply = manager->get(request);
+    QEventLoop eventLoop;
+    QObject::connect(manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
+    eventLoop.exec();
+    QByteArray bytes = pReply->readAll();
+    QString filePath = QDir::tempPath() + '/' + filename;
+    mainWindow->debug("Write: " + filePath);
+    tempFile = new QFile(filePath);
      if (tempFile->exists()) {
          tempFile->remove();
      }
      tempFile->open(QIODevice::ReadWrite);
-    connect(networkReply,&QNetworkReply::readyRead,this, &HttpClient::readyRead);
-    connect(networkReply,&QNetworkReply::finished,this, &HttpClient::finished);
-}
-
-void HttpClient::readyRead(){
-    tempFile->write(networkReply->readAll());
-}
-
-void HttpClient::finished(){
-    tempFile->flush();
-    tempFile->close();
-    tempFile->deleteLater();
-    downloadDone();
+     tempFile->write(bytes);
+     tempFile->flush();
+     tempFile->close();
+     downloadDone();
 }
 
 void HttpClient::upload(QString targetUrl, QString filename) {

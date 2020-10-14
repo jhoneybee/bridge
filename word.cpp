@@ -5,6 +5,7 @@ Word::Word(MainWindow *mainWindow, WordStruct *wordStruct) {
     this->httpClient = new HttpClient(mainWindow);
     this->wordStruct = wordStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
+    connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
 }
 
 Word::~Word(){
@@ -14,15 +15,18 @@ Word::~Word(){
 void Word::editor() {
     // 下载文件到临时目录
     httpClient->download(wordStruct->target, wordStruct->filename);
+}
+
+void Word::quit() {
+    httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
+}
+
+void Word::downloadDone(){
     QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
     connect(word, SIGNAL(Quit()), this, SLOT(quit()));
     word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + wordStruct->filename);
-}
-
-void Word::quit() {
-    httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
 }
 
 void Word::uploadDone() {

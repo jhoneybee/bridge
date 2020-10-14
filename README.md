@@ -89,7 +89,8 @@ function editor(){
     "channel": "OFFICE_OPEN_WORD_EDITOR",
     "params": {
         "target": "http://127.0.0.1:8080/1.docs",
-        "saveUrl": "http://127.0.0.1:8080/saveUrl"
+        "saveUrl": "http://127.0.0.1:8080/saveUrl",
+        "filename": "xxxx.docs",
     }
 }
 ```
@@ -98,6 +99,7 @@ function editor(){
 |----  |----  |------
 |target | 字符串类型 | 要访问的文档地址，是一个url地址
 |saveUrl | 字符串类型 | 要保存的服务器地址
+|filename | 字符串类型 | 当前的文件名
 
 
 

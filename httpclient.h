@@ -6,7 +6,6 @@
 #include <QFile>
 #include <QDir>
 #include <QNetworkAccessManager>
-
 class HttpClient;
 
 #include "mainwindow.h"
@@ -24,9 +23,6 @@ private:
     QNetworkAccessManager *avatorManager;
     QFile* tempFile;
     MainWindow *mainWindow;
-public slots:
-    void readyRead();
-    void finished();
 signals:
     void downloadDone();
     void uploadDone();

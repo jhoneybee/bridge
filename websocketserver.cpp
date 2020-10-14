@@ -14,7 +14,12 @@ WebSocketServer::~WebSocketServer() {
 
 void WebSocketServer::listen(quint16 port){
     this->webSocketServer->listen(QHostAddress::Any,port);
-
+    // 如果存在，则退出程序，防止多开
+    if (1006 == this->webSocketServer->error()) {
+        mainWindow->trayIconPtr->hide();
+        exit(EXIT_FAILURE);
+        return;
+    }
     // 初始化事件信息
     connect(webSocketServer, &QWebSocketServer::newConnection, this, &WebSocketServer::onNewConnection);
     connect(webSocketServer, &QWebSocketServer::closed, this, &WebSocketServer::onClosed);
