@@ -44,14 +44,17 @@ public:
      * @param target word的预览地址
      */
     void print();
+
 private:
     MainWindow *mainWindow;
     HttpClient *httpClient;
     WordStruct *wordStruct;
+    QAxWidget *word;
+    bool isUpload = false;
 public slots:
-    void quit();
     void uploadDone();
     void downloadDone();
+    void Quit();
 };
 
 #endif // WORD_H

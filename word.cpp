@@ -6,25 +6,31 @@ Word::Word(MainWindow *mainWindow, WordStruct *wordStruct) {
     this->wordStruct = wordStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
     connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
+    word = new QAxWidget("Word.Application");
+    connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
 }
 
 Word::~Word(){
     this->httpClient->deleteLater();
+    this->word->deleteLater();
 }
 
 void Word::editor() {
+    word->setProperty("Visible", true);
     // 下载文件到临时目录
     httpClient->download(wordStruct->target, wordStruct->filename);
 }
 
-void Word::quit() {
-    httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
+void Word::Quit() {
+    if (!isUpload) {
+        isUpload = true;
+        mainWindow->debug("Word Quit.");
+        mainWindow->debug("Word Upload. file: ["+ wordStruct->filename+"], url: ["+wordStruct->saveUrl+"]");
+        httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
+    }
 }
 
 void Word::downloadDone(){
-    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
-    connect(word, SIGNAL(Quit()), this, SLOT(quit()));
-    word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + wordStruct->filename);
 }
@@ -37,14 +43,13 @@ void Word::uploadDone() {
     QJsonDocument doc(sendJson);
     wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
     wordStruct->client->flush();
+    isUpload = false;
 }
 
 void Word::preview() {
-    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
     word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", wordStruct->target);
-
     QJsonObject sendJson;
     sendJson["id"] = wordStruct->id;
     sendJson["status"] = 200;
@@ -55,7 +60,6 @@ void Word::preview() {
 }
 
 void Word::print() {
-    QAxWidget *word = new QAxWidget(QString::fromUtf8("Word.Application"), mainWindow, Qt::MSWindowsOwnDC);
     word->setProperty("Visible", false);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", wordStruct->target);

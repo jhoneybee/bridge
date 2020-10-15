@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     this->webSocketServer = new WebSocketServer(this);
     webSocketServer->listen(config->port.toInt());
     debug("WebSocket Server listen [" + config->port + "]");
+
 }
 
 void MainWindow::setConfig(Config *config) {
@@ -32,8 +33,12 @@ void MainWindow::activated(QSystemTrayIcon::ActivationReason reason) {
     }
 }
 
+void MainWindow::Quit(){
+    qDebug() << "test Quit";
+}
+
 void MainWindow::debug(QString info) {
-    if (ui->log->document()->lineCount() > 50) {
+    if (ui->log->document()->lineCount() > 5000) {
         ui->log->clear();
     }
     ui->log->appendPlainText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss") +" : " + info);

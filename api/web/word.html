@@ -37,9 +37,19 @@
                 }
             }))
         }
+
+        function editorOld() {
+            socket.send(JSON.stringify({
+                "command": "open",
+                "filename": "1.docx",
+                "target": "http://localhost:8000/1.docx",
+                "upload": "http://localhost:8000/saveUrl",
+            }))
+        }
     </script>
     <button onclick="preview()">预览Word</button>
     <button onclick="print()">打印Word</button>
     <button onclick="editor()">编辑Word</button>
+    <button onclick="editorOld()">旧编辑Word</button>
 </body>
 </html>

@@ -33,8 +33,10 @@ private:
     Ui::MainWindow *ui;
     Config *config;
     WebSocketServer *webSocketServer;
+
 public slots:
     // 提供的事件注册
     void activated(QSystemTrayIcon::ActivationReason reason);
+    void Quit();
 };
 #endif // MAINWINDOW_H

@@ -1,15 +1,19 @@
 #include "websocketserver.h"
 
+WordStruct wordStruct;
+
 WebSocketServer::WebSocketServer(MainWindow *mainWindow) {
     this->mainWindow = mainWindow;
     this->webSocketServer = new QWebSocketServer(QStringLiteral("bridge"), QWebSocketServer::NonSecureMode);
     this->mainWindow = mainWindow;
+    word = new Word(mainWindow, &wordStruct);
 }
 
 WebSocketServer::~WebSocketServer() {
     // 清除内存数据
     this->clients.clear();
     qDeleteAll(this->clients);
+    word->deleteLater();
 }
 
 void WebSocketServer::listen(quint16 port){
@@ -85,25 +89,24 @@ void WebSocketServer::onTextMessageReceived(QString message) {
     // 参数信息
     QJsonObject params = jsonObject.value("params").toObject();
 
-    WordStruct wordStruct;
     wordStruct.client = pClient;
     wordStruct.filename = params.value("filename").toString();
     wordStruct.id = jsonObject.value("id").toString();
     wordStruct.saveUrl = params.value("saveUrl").toString();
     wordStruct.target = params.value("target").toString();
-    Word word(mainWindow, &wordStruct);
+
     if (channel == "OFFICE_OPEN_WORD_EDITOR") {
         // 打开 OFFICE 的 Word 功能
         // 设置文件目标地址,以及保存地址,编辑完文件后自动保存上传到服务器。
-        word.editor();
+        word->editor();
         return;
     }else if (channel == "OFFICE_OPEN_WORD_PREVIEW") {
         // 预览Word的文件
-        word.preview();
+        word->preview();
         return;
     }else if (channel == "OFFICE_OPEN_WORD_PRINT") {
         // 打印 Word
-        word.print();
+        word->print();
         return;
     }
 }

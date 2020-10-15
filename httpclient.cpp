@@ -33,7 +33,7 @@ void HttpClient::download(QString url, QString filename) {
 }
 
 void HttpClient::upload(QString targetUrl, QString filename) {
-    mainWindow->debug("upload file start. targetUrl = ["+targetUrl+"], filename = ["+filename+"]");
+    mainWindow->debug("Upload file start. targetUrl = ["+targetUrl+"], filename = ["+filename+"]");
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
     QHttpPart filePart;
     QFile *file = new QFile(QDir::tempPath() + '/' + filename);

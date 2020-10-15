@@ -21,6 +21,7 @@ private:
     QWebSocketServer *webSocketServer;
     MainWindow *mainWindow;
     QList<QWebSocket*> clients;
+    Word *word;
 public slots:
     // 启动一个WebSocket连接
     void onNewConnection();
