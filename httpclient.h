@@ -26,6 +26,8 @@ private:
 signals:
     void downloadDone();
     void uploadDone();
+public slots:
+    void finished();
 };
 
 #endif // HTTPCLIENT_H

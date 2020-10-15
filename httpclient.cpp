@@ -49,5 +49,10 @@ void HttpClient::upload(QString targetUrl, QString filename) {
     QNetworkRequest request(targetUrl);
     QNetworkReply* networkReply = avatorManager->post(request, multiPart);
     multiPart->setParent(networkReply);
-    connect(networkReply, SIGNAL(finished()), this, SLOT(uploadDone()));
+    connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));
+}
+
+
+void HttpClient::finished(){
+    emit uploadDone();
 }

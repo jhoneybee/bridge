@@ -6,19 +6,11 @@ Word::Word(MainWindow *mainWindow, WordStruct *wordStruct) {
     this->wordStruct = wordStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
     connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
-    word = new QAxWidget("Word.Application");
-    connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
 }
 
 Word::~Word(){
     this->httpClient->deleteLater();
     this->word->deleteLater();
-}
-
-void Word::editor() {
-    word->setProperty("Visible", true);
-    // 下载文件到临时目录
-    httpClient->download(wordStruct->target, wordStruct->filename);
 }
 
 void Word::Quit() {
@@ -46,7 +38,17 @@ void Word::uploadDone() {
     isUpload = false;
 }
 
+void Word::editor() {
+    word = new QAxWidget("Word.Application");
+    connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
+    word->update();
+    word->setProperty("Visible", true);
+    // 下载文件到临时目录
+    httpClient->download(wordStruct->target, wordStruct->filename);
+}
+
 void Word::preview() {
+    word = new QAxWidget("Word.Application");
     word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", wordStruct->target);
@@ -57,9 +59,11 @@ void Word::preview() {
     QJsonDocument doc(sendJson);
     wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
     wordStruct->client->flush();
+    word->deleteLater();
 }
 
 void Word::print() {
+    word = new QAxWidget("Word.Application");
     word->setProperty("Visible", false);
     QAxObject *documents = word->querySubObject("Documents");
     documents->dynamicCall("Open(const QString&)", wordStruct->target);
@@ -72,4 +76,5 @@ void Word::print() {
     QJsonDocument doc(sendJson);
     wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
     wordStruct->client->flush();
+    word->deleteLater();
 }

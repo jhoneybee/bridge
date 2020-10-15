@@ -33,10 +33,6 @@ void MainWindow::activated(QSystemTrayIcon::ActivationReason reason) {
     }
 }
 
-void MainWindow::Quit(){
-    qDebug() << "test Quit";
-}
-
 void MainWindow::debug(QString info) {
     if (ui->log->document()->lineCount() > 5000) {
         ui->log->clear();

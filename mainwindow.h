@@ -37,6 +37,5 @@ private:
 public slots:
     // 提供的事件注册
     void activated(QSystemTrayIcon::ActivationReason reason);
-    void Quit();
 };
 #endif // MAINWINDOW_H
