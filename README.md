@@ -41,7 +41,8 @@ function editor(){
         "channel": "OFFICE_OPEN_WORD_EDITOR",
         "params": {
             "target": "http://127.0.0.1:8080/1.docs",
-            "saveUrl": "http://127.0.0.1:8080/saveUrl"
+            "saveUrl": "http://127.0.0.1:8080/saveUrl",
+            "filename": "xxxx.docs"
         }
     }))
 }
