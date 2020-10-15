@@ -1,58 +1,60 @@
 #include "httpclient.h"
 
 HttpClient::HttpClient(MainWindow *mainWindow){
-    this->avatorManager = new QNetworkAccessManager(mainWindow);
     this->mainWindow = mainWindow;
 }
 
 HttpClient::~HttpClient(){
-    this->avatorManager->deleteLater();
 }
 
 void HttpClient::download(QString url, QString filename) {
     // 构建及发送请求
-    QNetworkAccessManager *manager = new QNetworkAccessManager();
+    QNetworkAccessManager manager;
     QNetworkRequest request;
     request.setUrl(QUrl(url));
-    QNetworkReply *pReply = manager->get(request);
+    QNetworkReply *pReply = manager.get(request);
     QEventLoop eventLoop;
-    QObject::connect(manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
+    connect(&manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
     eventLoop.exec();
     QByteArray bytes = pReply->readAll();
     QString filePath = QDir::tempPath() + '/' + filename;
     mainWindow->debug("Write: " + filePath);
-    tempFile = new QFile(filePath);
-     if (tempFile->exists()) {
-         tempFile->remove();
+    QFile file(filePath);
+     if (file.exists()) {
+         file.remove();
      }
-     tempFile->open(QIODevice::ReadWrite);
-     tempFile->write(bytes);
-     tempFile->flush();
-     tempFile->close();
+     file.open(QIODevice::ReadWrite);
+     file.write(bytes);
+     file.flush();
+     file.close();
      downloadDone();
 }
 
-void HttpClient::upload(QString targetUrl, QString filename) {
-    mainWindow->debug("Upload file start. targetUrl = ["+targetUrl+"], filename = ["+filename+"]");
+void HttpClient::upload(QString filePath, QString saveUrl, QString filename) {
+    mainWindow->debug("Upload file start. filePath = ["+filePath+"], saveUrl = ["+saveUrl+"]");
+    QNetworkAccessManager manager;
     QHttpMultiPart *multiPart = new QHttpMultiPart(QHttpMultiPart::FormDataType);
     QHttpPart filePart;
-    QFile *file = new QFile(QDir::tempPath() + '/' + filename);
     filePart.setHeader(QNetworkRequest::ContentTypeHeader, QVariant("application/vnd.openxmlformats-officedocument.wordprocessingml.document"));
     filePart.setHeader(QNetworkRequest::ContentDispositionHeader, QVariant("form-data; name=\"file\"; filename=\""+ filename+"\""));
-    if (!file->isOpen()) {
-      file->open(QIODevice::ReadOnly);
+    QFile file(filePath);
+    if (!file.isOpen()) {
+      file.open(QIODevice::ReadOnly);
     }
-    filePart.setBodyDevice(file);
-    file->setParent(multiPart);
+    filePart.setBodyDevice(&file);
+    file.setParent(multiPart);
     multiPart->append(filePart);
-    QUrl url(targetUrl);
-    QNetworkRequest request(targetUrl);
-    QNetworkReply* networkReply = avatorManager->post(request, multiPart);
-    multiPart->setParent(networkReply);
-    connect(networkReply, SIGNAL(finished()), this, SLOT(finished()));
-}
 
+    QUrl url(saveUrl);
+    qDebug() << url.toString();
+    QNetworkRequest request(url);
+    QNetworkReply *pReply = manager.post(request, multiPart);
+    multiPart->setParent(pReply);
+    QEventLoop eventLoop;
+    connect(&manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
+    eventLoop.exec();
 
-void HttpClient::finished(){
-    emit uploadDone();
+    mainWindow->debug("Upload Error: ["+pReply->errorString()+"]");
+    mainWindow->debug("Upload file end. "+ QString(pReply->readAll()));
+    uploadDone();
 }

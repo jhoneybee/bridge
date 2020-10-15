@@ -18,7 +18,7 @@ void Word::Quit() {
         isUpload = true;
         mainWindow->debug("Word Quit.");
         mainWindow->debug("Word Upload. file: ["+ wordStruct->filename+"], url: ["+wordStruct->saveUrl+"]");
-        httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl);
+        httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl, wordStruct->filename);
     }
 }
 
