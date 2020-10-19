@@ -16,19 +16,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    excel.cpp \
     httpclient.cpp \
     main.cpp \
     mainwindow.cpp \
-    websocketserver.cpp \
-    word.cpp
+    offfice.cpp \
+    websocketserver.cpp
 
 HEADERS += \
-    excel.h \
     httpclient.h \
     mainwindow.h \
-    websocketserver.h \
-    word.h
+    offfice.h \
+    websocketserver.h
 
 FORMS += \
     mainwindow.ui

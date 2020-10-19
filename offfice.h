@@ -7,24 +7,25 @@
 #include <QDialog>
 #include <QVBoxLayout>
 
-class Word;
+class Office;
 
 #include "mainwindow.h"
 #include "httpclient.h"
 
-struct WordStruct {
+struct OfficeStruct {
     QString target;
     QString saveUrl;
     QString filename;
     QString id;
+    QString type;
     QWebSocket *client;
 };
 
-class Word : public QObject{
+class Office : public QObject{
     Q_OBJECT
 public:
-    Word(MainWindow *mainWindow, WordStruct *wordStruct);
-    ~Word();
+    Office(MainWindow *mainWindow, OfficeStruct *wordStruct);
+    ~Office();
 
     /**
      * @brief editor 编辑Word
@@ -48,9 +49,9 @@ public:
 private:
     MainWindow *mainWindow;
     HttpClient *httpClient;
-    WordStruct *wordStruct;
+    OfficeStruct *officeStruct;
     QAxWidget *word;
-    bool isUpload = false;
+    bool isUpload = true;
 public slots:
     void uploadDone();
     void downloadDone();

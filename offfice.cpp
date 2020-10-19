@@ -1,80 +1,80 @@
-#include "word.h"
+#include "offfice.h"
 
-Word::Word(MainWindow *mainWindow, WordStruct *wordStruct) {
+Office::Office(MainWindow *mainWindow, OfficeStruct *officeStruct) {
     this->mainWindow = mainWindow;
     this->httpClient = new HttpClient(mainWindow);
-    this->wordStruct = wordStruct;
+    this->officeStruct = officeStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
     connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
 }
 
-Word::~Word(){
+Office::~Office(){
     this->httpClient->deleteLater();
     this->word->deleteLater();
 }
 
-void Word::Quit() {
+void Office::Quit() {
     if (!isUpload) {
         isUpload = true;
         mainWindow->debug("Word Quit.");
-        mainWindow->debug("Word Upload. file: ["+ wordStruct->filename+"], url: ["+wordStruct->saveUrl+"]");
-        httpClient->upload(QDir::tempPath() + '/' + wordStruct->filename, wordStruct->saveUrl, wordStruct->filename);
+        mainWindow->debug("Word Upload. file: ["+ officeStruct->filename+"], url: ["+officeStruct->saveUrl+"]");
+        httpClient->upload(QDir::tempPath() + '/' + officeStruct->filename, officeStruct->saveUrl, officeStruct->filename);
     }
 }
 
-void Word::downloadDone(){
+void Office::downloadDone(){
     QAxObject *documents = word->querySubObject("Documents");
-    documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + wordStruct->filename);
+    documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + officeStruct->filename);
 }
 
-void Word::uploadDone() {
+void Office::uploadDone() {
     QJsonObject sendJson;
-    sendJson["id"] = wordStruct->id;
+    sendJson["id"] = officeStruct->id;
     sendJson["status"] = 200;
     sendJson["message"] = "Word文件保存成功";
     QJsonDocument doc(sendJson);
-    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
-    wordStruct->client->flush();
-    isUpload = false;
+    officeStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    officeStruct->client->flush();
 }
 
-void Word::editor() {
+void Office::editor() {
+    isUpload = false;
     word = new QAxWidget("Word.Application");
     connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
     word->update();
     word->setProperty("Visible", true);
     // 下载文件到临时目录
-    httpClient->download(wordStruct->target, wordStruct->filename);
+    httpClient->download(officeStruct->target, officeStruct->filename);
 }
 
-void Word::preview() {
+void Office::preview() {
     word = new QAxWidget("Word.Application");
     word->setProperty("Visible", true);
     QAxObject *documents = word->querySubObject("Documents");
-    documents->dynamicCall("Open(const QString&)", wordStruct->target);
+    documents->dynamicCall("Open(const QString&)", officeStruct->target);
     QJsonObject sendJson;
-    sendJson["id"] = wordStruct->id;
+    sendJson["id"] = officeStruct->id;
     sendJson["status"] = 200;
     sendJson["message"] = "预览数据成功";
     QJsonDocument doc(sendJson);
-    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
-    wordStruct->client->flush();
+    officeStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    officeStruct->client->flush();
     word->deleteLater();
 }
 
-void Word::print() {
+void Office::print() {
     word = new QAxWidget("Word.Application");
     word->setProperty("Visible", false);
     QAxObject *documents = word->querySubObject("Documents");
-    documents->dynamicCall("Open(const QString&)", wordStruct->target);
+    documents->dynamicCall("Open(const QString&)", officeStruct->target);
     word->dynamicCall("PrintOut()");
 
     QJsonObject sendJson;
-    sendJson["id"] = wordStruct->id;
+    sendJson["id"] = officeStruct->id;
     sendJson["status"] = 200;
     sendJson["message"] = "打印数据成功";
     QJsonDocument doc(sendJson);
-    wordStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
-    wordStruct->client->flush();
+    officeStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
+    officeStruct->client->flush();
     word->deleteLater();
 }

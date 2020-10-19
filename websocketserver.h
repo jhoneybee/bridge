@@ -8,7 +8,7 @@
 class WebSocketServer;
 
 #include "mainwindow.h"
-#include "word.h"
+#include "offfice.h"
 
 
 class WebSocketServer : public QObject{
@@ -21,7 +21,7 @@ private:
     QWebSocketServer *webSocketServer;
     MainWindow *mainWindow;
     QList<QWebSocket*> clients;
-    Word *word;
+    Office *office;
 public slots:
     // 启动一个WebSocket连接
     void onNewConnection();
