@@ -71,7 +71,7 @@ function editor(){
 
 ```json
 {
-    "channel": "OFFICE_OPEN_WORD_EDITOR",
+    "channel": "OFFICE_OPEN_WORD_PRINT",
     "params": {
         "target": "http://127.0.0.1:8080/demo.docs"
     }
