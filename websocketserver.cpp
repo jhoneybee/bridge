@@ -1,4 +1,4 @@
-#include "websocketserver.h"
+﻿#include "websocketserver.h"
 
 OfficeStruct officeStruct;
 
@@ -90,23 +90,28 @@ void WebSocketServer::onTextMessageReceived(QString message) {
     QJsonObject params = jsonObject.value("params").toObject();
 
     officeStruct.client = pClient;
-    officeStruct.filename = params.value("filename").toString();
     officeStruct.id = jsonObject.value("id").toString();
     officeStruct.saveUrl = params.value("saveUrl").toString();
     officeStruct.target = params.value("target").toString();
 
-    if (channel == "OFFICE_OPEN_WORD_EDITOR") {
-        // 打开 OFFICE 的 Word 功能
-        // 设置文件目标地址,以及保存地址,编辑完文件后自动保存上传到服务器。
-        office->editor();
-        return;
-    }else if (channel == "OFFICE_OPEN_WORD_PREVIEW") {
-        // 预览Word的文件
-        office->preview();
-        return;
-    }else if (channel == "OFFICE_OPEN_WORD_PRINT") {
-        // 打印 Word
-        office->print();
-        return;
+    QStringList channelParams = channel.split("_");
+
+    if (channelParams.length() == 4) {
+        if (channelParams.at(0) == "OFFICE" && channelParams.at(1) == "OPEN") {
+            if (channelParams.at(2) == "WORD") {
+                officeStruct.type = WORD;
+            }else if (channelParams.at(2) == "EXCEL") {
+                officeStruct.type = EXCEL;
+            }else if (channelParams.at(2) == "PPT") {
+                officeStruct.type = PPT;
+            }
+            if (channelParams.at(3) == "EDITOR") {
+                office->editor();
+            }else if (channelParams.at(3) == "PREVIEW") {
+                office->preview();
+            }else if (channelParams.at(3) == "PRINT") {
+                office->print();
+            }
+        }
     }
 }

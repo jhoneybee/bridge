@@ -1,4 +1,4 @@
-#include "httpclient.h"
+﻿#include "httpclient.h"
 
 HttpClient::HttpClient(MainWindow *mainWindow){
     this->mainWindow = mainWindow;
@@ -17,7 +17,7 @@ void HttpClient::download(QString url, QString filename) {
     connect(&manager, &QNetworkAccessManager::finished, &eventLoop, &QEventLoop::quit);
     eventLoop.exec();
     QByteArray bytes = pReply->readAll();
-    QString filePath = QDir::tempPath() + '/' + filename;
+    QString filePath = this->mainWindow->getTempDownload() + '/' + filename;
     mainWindow->debug("Write: " + filePath);
     QFile file(filePath);
      if (file.exists()) {

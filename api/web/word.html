@@ -8,7 +8,9 @@
 <body>
     <script>
         var socket = new WebSocket('ws://localhost:29580');
-
+        socket.onmessage = (e) => {
+            alert(e.data);
+        }
         function preview(){
             socket.send(JSON.stringify({
                 "channel": "OFFICE_OPEN_WORD_PREVIEW",
@@ -29,6 +31,7 @@
 
         function editor() {
             socket.send(JSON.stringify({
+                "id": "00000001",
                 "channel": "OFFICE_OPEN_WORD_EDITOR",
                 "params": {
                     "filename": "1.docx",
@@ -38,18 +41,20 @@
             }))
         }
 
-        function editorOld() {
+        function previewExcel(){
             socket.send(JSON.stringify({
-                "command": "open",
-                "filename": "1.docx",
-                "target": "http://localhost:8000/1.docx",
-                "upload": "http://localhost:8000/saveUrl",
+                "channel": "OFFICE_OPEN_EXCEL_PREVIEW",
+                "params": {
+                    "target": "C:/Users/zhang/Desktop/1.xlsx"
+                }
             }))
         }
+
     </script>
     <button onclick="preview()">预览Word</button>
     <button onclick="print()">打印Word</button>
     <button onclick="editor()">编辑Word</button>
-    <button onclick="editorOld()">旧编辑Word</button>
+    <button onclick="previewExcel()">预览EXCEL</button>
+
 </body>
 </html>

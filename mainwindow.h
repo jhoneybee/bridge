@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -28,10 +28,13 @@ public:
     void setConfig(Config *config);
     // 发送对应的消息
     void debug(QString info);
+    // 获取下载文件的临时目录
+    QString getTempDownload();
     QSystemTrayIcon* trayIconPtr;
+
 private:
-    Ui::MainWindow *ui;
     Config *config;
+    Ui::MainWindow *ui;
     WebSocketServer *webSocketServer;
 
 public slots:

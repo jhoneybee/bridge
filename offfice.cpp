@@ -1,4 +1,4 @@
-#include "offfice.h"
+﻿#include "offfice.h"
 
 Office::Office(MainWindow *mainWindow, OfficeStruct *officeStruct) {
     this->mainWindow = mainWindow;
@@ -6,6 +6,7 @@ Office::Office(MainWindow *mainWindow, OfficeStruct *officeStruct) {
     this->officeStruct = officeStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
     connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
+
 }
 
 Office::~Office(){
@@ -13,17 +14,48 @@ Office::~Office(){
     this->word->deleteLater();
 }
 
+
+QString Office::getTypeName(){
+    if (this->officeStruct->type == WORD) {
+        return "Word.Application";
+    }
+
+    if (this->officeStruct->type == EXCEL) {
+        return "Excel.Application";
+    }
+
+    if (this->officeStruct->type == PPT) {
+        return "PowerPoint.Application";
+    }
+    return "";
+}
+
+const char* Office::getWork(){
+    if (this->officeStruct->type == WORD) {
+        return "Documents";
+    }
+
+    if (this->officeStruct->type == EXCEL) {
+        return "Workbooks";
+    }
+
+    if (this->officeStruct->type == PPT) {
+        return "Presentations";
+    }
+    return "";
+}
+
 void Office::Quit() {
     if (!isUpload) {
         isUpload = true;
-        mainWindow->debug("Word Quit.");
-        mainWindow->debug("Word Upload. file: ["+ officeStruct->filename+"], url: ["+officeStruct->saveUrl+"]");
+        mainWindow->debug("Quit.");
+        mainWindow->debug("Upload. file: ["+ officeStruct->filename+"], url: ["+officeStruct->saveUrl+"]");
         httpClient->upload(QDir::tempPath() + '/' + officeStruct->filename, officeStruct->saveUrl, officeStruct->filename);
     }
 }
 
 void Office::downloadDone(){
-    QAxObject *documents = word->querySubObject("Documents");
+    QAxObject *documents = word->querySubObject(getWork());
     documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + officeStruct->filename);
 }
 
@@ -31,7 +63,7 @@ void Office::uploadDone() {
     QJsonObject sendJson;
     sendJson["id"] = officeStruct->id;
     sendJson["status"] = 200;
-    sendJson["message"] = "Word文件保存成功";
+    sendJson["message"] = "文件保存成功";
     QJsonDocument doc(sendJson);
     officeStruct->client->sendTextMessage(doc.toJson(QJsonDocument::Compact));
     officeStruct->client->flush();
@@ -39,7 +71,7 @@ void Office::uploadDone() {
 
 void Office::editor() {
     isUpload = false;
-    word = new QAxWidget("Word.Application");
+    word = new QAxWidget(getTypeName());
     connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
     word->update();
     word->setProperty("Visible", true);
@@ -48,9 +80,9 @@ void Office::editor() {
 }
 
 void Office::preview() {
-    word = new QAxWidget("Word.Application");
+    word = new QAxWidget(getTypeName());
     word->setProperty("Visible", true);
-    QAxObject *documents = word->querySubObject("Documents");
+    QAxObject *documents = word->querySubObject(getWork());
     documents->dynamicCall("Open(const QString&)", officeStruct->target);
     QJsonObject sendJson;
     sendJson["id"] = officeStruct->id;
@@ -63,9 +95,9 @@ void Office::preview() {
 }
 
 void Office::print() {
-    word = new QAxWidget("Word.Application");
+    word = new QAxWidget(getTypeName());
     word->setProperty("Visible", false);
-    QAxObject *documents = word->querySubObject("Documents");
+    QAxObject *documents = word->querySubObject(getWork());
     documents->dynamicCall("Open(const QString&)", officeStruct->target);
     word->dynamicCall("PrintOut()");
 

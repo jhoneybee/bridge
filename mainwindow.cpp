@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -15,13 +15,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     // 初始化数据信息
     this->config = new Config();
     setConfig(config);
+    ui->fDownloadValue->setText(QDir::tempPath());
 
     this->webSocketServer = new WebSocketServer(this);
     webSocketServer->listen(config->port.toInt());
     debug("WebSocket Server listen [" + config->port + "]");
-
 }
 
+QString MainWindow::getTempDownload(){
+    return this->ui->fDownloadValue->text();
+}
 void MainWindow::setConfig(Config *config) {
     this->ui->fProtValue->setText(config->port);
     this->ui->fWebSocketValue->setText(config->webSocket);

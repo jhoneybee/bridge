@@ -1,4 +1,4 @@
-#ifndef WORD_H
+﻿#ifndef WORD_H
 #define WORD_H
 
 #include <QObject>
@@ -12,12 +12,17 @@ class Office;
 #include "mainwindow.h"
 #include "httpclient.h"
 
+// office的类型
+enum OfficeType {
+    WORD, EXCEL, PPT
+};
+
 struct OfficeStruct {
     QString target;
     QString saveUrl;
     QString filename;
     QString id;
-    QString type;
+    OfficeType type;
     QWebSocket *client;
 };
 
@@ -52,6 +57,8 @@ private:
     OfficeStruct *officeStruct;
     QAxWidget *word;
     bool isUpload = true;
+    QString getTypeName();
+    const char* getWork();
 public slots:
     void uploadDone();
     void downloadDone();

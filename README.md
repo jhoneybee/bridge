@@ -48,12 +48,12 @@ function editor(){
 }
 ```
 
-### 预览 Word
+### 预览 WORD/EXCEL/PPT
 
 
 ```json
 {
-    "channel": "OFFICE_OPEN_WORD_PREVIEW",
+    "channel": "OFFICE_OPEN_${TYPE}_PREVIEW",
     "params": {
         "target": "http://127.0.0.1:8080/demo.docs"
     }
@@ -67,11 +67,11 @@ function editor(){
 
 
 
-### 打印 Word
+### 打印 WORD/EXCEL/PPT
 
 ```json
 {
-    "channel": "OFFICE_OPEN_WORD_EDITOR",
+    "channel": "OFFICE_OPEN_${type}_EDITOR",
     "params": {
         "target": "http://127.0.0.1:8080/demo.docs"
     }
@@ -83,11 +83,11 @@ function editor(){
 |target | 字符串类型 | 要访问的文档地址，可以是一个本地的文档，也可以是一个url地址
 
 
-### 编辑 Word
+### 编辑 WORD/EXCEL/PPT
 
 ```json
 {
-    "channel": "OFFICE_OPEN_WORD_EDITOR",
+    "channel": "OFFICE_OPEN_${TYPE}_EDITOR",
     "params": {
         "target": "http://127.0.0.1:8080/1.docs",
         "saveUrl": "http://127.0.0.1:8080/saveUrl",
