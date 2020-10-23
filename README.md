@@ -2,9 +2,9 @@
 
 功能支持如下
 
-- 打印Word文件
-- 编辑Word文件
-- 预览Word文件
+- 打印Office文件
+- 编辑Office文件
+- 预览Office文件
 
 
 ## Web调用例子
