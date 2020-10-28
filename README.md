@@ -14,7 +14,7 @@
 const socket = new WebSocket('ws://localhost:29580');
 
 // 如果已经关闭连接,则进行
-if (socket.CLOSED) {
+if (socket.readyState === socket.CLOSED) {
     alert("未启动插件程序,请点击安装后进行启动.")
 }
 

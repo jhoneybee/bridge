@@ -93,7 +93,7 @@ void WebSocketServer::onTextMessageReceived(QString message) {
     officeStruct.id = jsonObject.value("id").toString();
     officeStruct.saveUrl = params.value("saveUrl").toString();
     officeStruct.target = params.value("target").toString();
-
+    officeStruct.filename = params.value("filename").toString();
     QStringList channelParams = channel.split("_");
 
     if (channelParams.length() == 4) {
