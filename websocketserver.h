@@ -1,10 +1,11 @@
-#ifndef WEBSOCKET_H
+﻿#ifndef WEBSOCKET_H
 #define WEBSOCKET_H
 
 #include <QObject>
 #include <QtWebSockets>
 #include <QWebSocketServer>
 #include <QJsonDocument>
+
 class WebSocketServer;
 
 #include "mainwindow.h"

@@ -50,10 +50,22 @@
             }))
         }
 
+        function editorExcel(){
+            socket.send(JSON.stringify({
+                "channel": "OFFICE_OPEN_EXCEL_EDITOR",
+                "params": {
+                    "filename": "test.xlsx",
+                    "target": "http://localhost:8000/test.xlsx",
+                    "saveUrl":  "http://localhost:8000/saveUrl",
+                }
+            }))
+        }
+
     </script>
     <button onclick="preview()">预览Word</button>
     <button onclick="print()">打印Word</button>
     <button onclick="editor()">编辑Word</button>
+    <button onclick="editorExcel()">编辑EXCEL</button>
     <button onclick="previewExcel()">预览EXCEL</button>
 
 </body>

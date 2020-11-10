@@ -6,7 +6,6 @@ Office::Office(MainWindow *mainWindow, OfficeStruct *officeStruct) {
     this->officeStruct = officeStruct;
     connect(httpClient, SIGNAL(uploadDone()), this, SLOT(uploadDone()));
     connect(httpClient, SIGNAL(downloadDone()), this, SLOT(downloadDone()));
-
 }
 
 Office::~Office(){
@@ -46,6 +45,7 @@ const char* Office::getWork(){
 }
 
 void Office::Quit() {
+    mainWindow->debug("Quit.");
     if (!isUpload) {
         isUpload = true;
         mainWindow->debug("Quit.");
@@ -55,8 +55,21 @@ void Office::Quit() {
 }
 
 void Office::downloadDone(){
-    QAxObject *documents = word->querySubObject(getWork());
-    documents->dynamicCall("Open(const QString&)", QDir::tempPath() + '/' + officeStruct->filename);
+    QString path = QDir::tempPath() + '/' + officeStruct->filename;
+    if (officeStruct->type == WORD) {
+        QAxObject *documents = word->querySubObject(getWork());
+        documents->dynamicCall("Open(const QString&)", path);
+    }else {
+        boxLayout = new QVBoxLayout();
+        dialog = new QDialog();
+        connect(dialog, SIGNAL(rejected()), this, SLOT(Quit()));
+        dialog->setLayout(boxLayout);
+        word = new QAxWidget();
+        word->setControl(QString::fromUtf8("{8856F961-340A-11D0-A96B-00C04FD705A2}"));
+        boxLayout->addWidget(word);
+        word->dynamicCall("Navigate(const QString&)", path);
+        dialog->showMaximized();
+    }
 }
 
 void Office::uploadDone() {
@@ -71,13 +84,17 @@ void Office::uploadDone() {
 
 void Office::editor() {
     isUpload = false;
-    word = new QAxWidget(getTypeName());
-    connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
-    word->update();
-    word->setProperty("Visible", true);
+    if (officeStruct->type == WORD) {
+        word = new QAxWidget();
+        word = new QAxWidget(getTypeName());
+        connect(word, SIGNAL(Quit()), this, SLOT(Quit()));
+        word->update();
+        word->setProperty("Visible", true);
+    }
     // 下载文件到临时目录
     httpClient->download(officeStruct->target, officeStruct->filename);
 }
+
 
 void Office::preview() {
     word = new QAxWidget(getTypeName());

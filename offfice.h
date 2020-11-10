@@ -7,6 +7,7 @@
 #include <QDialog>
 #include <QVBoxLayout>
 
+
 class Office;
 
 #include "mainwindow.h"
@@ -59,6 +60,8 @@ private:
     bool isUpload = true;
     QString getTypeName();
     const char* getWork();
+    QDialog *dialog;
+    QVBoxLayout *boxLayout;
 public slots:
     void uploadDone();
     void downloadDone();
